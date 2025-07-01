@@ -1,0 +1,39 @@
+/* Button Component Styles */
+
+/* Base button styles */
+.btn {
+  background: none;
+  border: none;
+  color: var(--text-dim);
+  font-family: inherit;
+  font-size: 0.9em;
+  padding: 0 2px;
+  cursor: pointer;
+  line-height: 1.2;
+  text-decoration: none;
+  transition: all 0.3s ease;
+}
+
+.btn::before {
+  content: "[ ";
+}
+
+.btn::after {
+  content: " ]";
+}
+
+.btn:focus {
+  outline: 1px solid var(--primary);
+  outline-offset: 1px;
+}
+
+.btn:active {
+  background: var(--primary);
+  color: var(--background);
+}
+
+/* Button group styles */
+.btn-group {
+  display: flex;
+  gap: 10px;
+}

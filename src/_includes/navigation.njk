@@ -1,0 +1,65 @@
+{# Navigation Component Template
+   Renders a nested unordered list navigation #}
+
+{% macro renderNavItem(itemName, itemData, currentPath, parentPath) %}
+{% set folderPath = (parentPath + '/' + itemName) if parentPath else itemName %}
+<li class="nav-item" data-folder-path="{{ folderPath }}">
+  {% if itemData.pages and itemData.pages.length > 0 %}
+    {% if itemData.pages.length == 1 and (not itemData.subfolders or (itemData.subfolders | length) == 0) %}
+      {# Single item folder - make folder name a direct link #}
+      {% set singlePage = itemData.pages[0] %}
+      <a href="{{ singlePage.url }}" class="nav-link {% if singlePage.url == currentPath %}current{% endif %}">
+        {{ itemName }}
+      </a>
+    {% else %}
+      {# This is a folder with multiple pages or subfolders #}
+      <span class="nav-label expandable">{{ itemName }}</span>
+      <ul class="nav-children">
+        {% for page in itemData.pages %}
+          <li class="nav-item">
+            <a href="{{ page.url }}" class="nav-link {% if page.url == currentPath %}current{% endif %}">
+              {% if page.inputPath.includes('index.md') %}index{% else %}{{ page.data.title or page.fileSlug }}{% endif %}
+            </a>
+          </li>
+        {% endfor %}
+        {% if itemData.subfolders %}
+          {% for subfolderName, subfolderData in itemData.subfolders %}
+            {{ renderNavItem(subfolderName, subfolderData, currentPath, folderPath) }}
+          {% endfor %}
+        {% endif %}
+      </ul>
+    {% endif %}
+  {% elif itemData.subfolders %}
+    {# This is a folder with only subfolders #}
+    <span class="nav-label expandable">{{ itemName }}</span>
+    <ul class="nav-children">
+      {% for subfolderName, subfolderData in itemData.subfolders %}
+        {{ renderNavItem(subfolderName, subfolderData, currentPath, folderPath) }}
+      {% endfor %}
+    </ul>
+  {% else %}
+    {# This is a single item #}
+    <span class="nav-label">{{ itemName }}</span>
+  {% endif %}
+</li>
+{% endmacro %}
+
+<nav class="main-nav">
+  {% if collections.folderTree.hasSubFolders %}
+  <div class="nav-controls">
+    <button class="btn toggle-all-btn" title="Expand All">
+      +
+    </button>
+  </div>
+  {% endif %}
+  
+  <ul class="nav-list">
+    <li class="nav-item">
+      <a href="/" class="nav-link {% if page.url == '/' %}current{% endif %}">Home</a>
+    </li>
+    
+    {% for folderName, folderData in collections.folderTree.tree %}
+      {{ renderNavItem(folderName, folderData, page.url, '') }}
+    {% endfor %}
+  </ul>
+</nav>

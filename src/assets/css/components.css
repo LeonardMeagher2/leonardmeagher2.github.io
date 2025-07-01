@@ -1,0 +1,81 @@
+/**
+ * Main CSS - Imports all component styles
+ * This file coordinates all component styles in the correct order
+ */
+
+/* Import components in dependency order */
+
+/* 1. Theme variables (must be first) */
+@import 'components/theme.css';
+
+/* 2. Typography (fonts and basic text styling) */
+@import 'components/typography.css';
+
+/* 3. Layout (container, header, footer) */
+@import 'components/layout.css';
+
+/* 4. Navigation (folder tree) */
+@import 'components/navigation.css';
+
+/* 5. Buttons (interactive elements) */
+@import 'components/buttons.css';
+
+/* Icon styles */
+.inline-icon-wrapper {
+  display: inline-block;
+  vertical-align: text-bottom;
+  position: relative;
+  line-height: 1;
+  height: 1em;
+  overflow: visible;
+}
+
+.inline-icon {
+  height: auto;
+  width: auto;
+  image-rendering: pixelated;
+  image-rendering: -moz-crisp-edges;
+  image-rendering: crisp-edges;
+  display: block;
+  position: absolute;
+  bottom: 0;
+  left: 0;
+}
+
+/* Terminal-style linear list instead of modern grid */
+.demo-grid {
+  display: block;
+  margin: 20px 0;
+}
+
+.demo-card {
+  border: 1px solid var(--border);
+  padding: 10px;
+  background: var(--surface);
+  margin-bottom: 10px;
+  border-left: 3px solid var(--border);
+  border-right: none;
+  border-top: none;
+  border-bottom: none;
+}
+
+.demo-card h3 {
+  margin-top: 0;
+}
+
+.demo-card a {
+  color: var(--link);
+  font-weight: 400;
+}
+
+/* Remove any theme toggles or complex animations */
+.theme-toggle {
+  display: none;
+}
+
+/* Mobile responsive overrides */
+@media (max-width: 768px) {
+  .demo-grid {
+    grid-template-columns: 1fr;
+  }
+}

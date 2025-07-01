@@ -1,0 +1,43 @@
+/* Theme Component Styles */
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --bg: #011;
+    --fg: #eea;
+    --hl: #77e;
+    --fg-rgb: 238, 238, 170;
+    --selected-bg: var(--hl);
+    --selected-color: var(--fg);
+  }
+}
+
+@media (prefers-color-scheme: light) {
+  :root {
+    --bg: #eea;
+    --fg: #440;
+    --hl: #44c;
+    --fg-rgb: 68, 68, 0;
+    --selected-bg: var(--hl);
+    --selected-color: var(--bg);
+  }
+}
+
+:root {
+  --primary: var(--fg);
+  --secondary: var(--fg);
+  --background: var(--bg);
+  --surface: var(--bg);
+  --link: var(--hl);
+  --border: var(--fg);
+  --text-dim: var(--fg);
+  --prompt: var(--fg);
+  --primary-rgb: var(--fg-rgb);
+  
+  /* Unified hover effect */
+  --hover-bg: var(--primary);
+  --hover-color: var(--background);
+  --hover-transition: all 0.3s ease;
+}
+
+
+

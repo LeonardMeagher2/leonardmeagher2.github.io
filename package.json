@@ -1,0 +1,17 @@
+{
+    "name": "leonardmeagher2-site",
+    "version": "1.0.0",
+    "description": "Leonard Meagher's personal site and digital garden",
+    "scripts": {
+        "build": "npm run clean && eleventy",
+        "serve": "npm run clean && eleventy --serve",
+        "start": "npm run clean && eleventy --serve",
+        "clean": "rmdir /s /q _site 2>nul || echo \"Directory already clean\""
+    },
+    "dependencies": {
+        "@11ty/eleventy": "^2.0.1"
+    },
+    "devDependencies": {
+        "@11ty/eleventy-navigation": "^0.3.5"
+    }
+}

@@ -1,0 +1,183 @@
+<html>
+
+<head>
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <link rel="manifest" href="/cards-manifest.json">
+  <title>Cards</title>
+  <style>
+    @import url('https://fonts.googleapis.com/css?family=Hind+Siliguri&display=swap');
+
+    :root {
+      --background: #84d1f7;
+      --primary: #d85f52;
+      --highlight: #fff;
+      --velocity-x: 0;
+    }
+
+    :root,
+    body {
+      width: 100%;
+      height: 100%;
+      padding: 0;
+      margin: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      display: flex;
+      flex-direction: row;
+      padding: 12px;
+      background: var(--background);
+      font-family: 'Hind Siliguri', sans-serif;
+      font-weight: bold;
+    }
+
+    .cards {
+      flex: 1;
+      display: flex;
+      flex-wrap: wrap;
+      max-width: 40em;
+      margin: auto;
+      justify-content: center;
+      align-items: center;
+    }
+
+    .card {
+      font-size: 4em;
+      float: left;
+      user-select: none;
+    }
+
+    .card:after {
+      content: "";
+      display: block;
+      margin: 0px 13px;
+      min-width: 2em;
+    }
+
+    .card .content {
+      margin: 3px;
+      text-align: center;
+      background: var(--primary);
+
+      border-radius: 5px;
+      border: 10px solid var(--highlight);
+      background: var(--primary);
+      min-width: 2em;
+      line-height: 2.66em;
+
+      cursor: pointer;
+      color: var(--highlight);
+      position: relative;
+      transition: transform 0.3s;
+      display: flex;
+      justify-content: center;
+    }
+
+    /*.card .content:before,
+    .card .content:after {
+      content: attr(data-value);
+      width: 1em;
+      height: 1em;
+      line-height: 1em;
+      font-size: 0.3em;
+      position: absolute;
+      background: var(--primary);
+      border: 3px solid var(--primary);
+      border-radius: 5px;
+      padding: 2px;
+      display: flex;
+      justify-content: center;
+    }
+
+    .card .content:before {
+      top: -0.3em;
+      left: -0.3em;
+    }
+
+    .card .content:after {
+      bottom: -0.3em;
+      right: -0.3em;
+      transform: scale(-1);
+    }*/
+
+    .card .content:active {
+      transform: scale(0.9);
+    }
+
+    .card .content.active {
+      transform: scale(2) translate(-25%, -25%);
+      z-index: 100;
+      position: fixed;
+      top: 50%;
+      left: 50%;
+      transition: color 0.3s, transform 0.3s;
+    }
+
+    .overlay {
+      width: 100%;
+      height: 100%;
+      position: fixed;
+      top: 0;
+      bottom: 0;
+      opacity: 1;
+      pointer-events: auto;
+      background: var(--background);
+      transition: opacity 0.3s;
+    }
+
+    .overlay.hidden {
+      pointer-events: none;
+      opacity: 0;
+      visibility: hidden;
+    }
+  </style>
+
+</head>
+
+<body>
+
+  <div class="cards">
+    <div class="card">
+      <div class="content" data-value="✊">✊</div>
+    </div>
+    <div class="card">
+      <div class="content" data-value="✋">✋</div>
+    </div>
+    <div class="card">
+      <div class="content" data-value="✌️">✌️</div>
+    </div>
+  </div>
+  <div class="overlay hidden"></div>
+  <script>
+    var cards = document.querySelectorAll(".card .content");
+    var overlay = document.querySelector(".overlay");
+
+    function handleClick(event) {
+      if (this.classList.contains("active")) {
+        this.classList.remove("active");
+        document.body.style.overflow = "";
+        overlay.classList.add("hidden");
+      } else {
+        this.classList.add("active");
+        document.body.style.overflow = "hidden";
+        overlay.classList.remove("hidden");
+      }
+    }
+
+    overlay.addEventListener("click", () => {
+      var card = document.querySelector(".card .content.active");
+      card.classList.remove("active");
+      document.body.style.overflow = "";
+      overlay.classList.add("hidden");
+    })
+
+    cards.forEach((card) => {
+      card.addEventListener("click", handleClick.bind(card));
+    });
+    
+  </script>
+
+</body>
+
+</html>

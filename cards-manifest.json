@@ -1,0 +1,8 @@
+{
+  "name": "Cards",
+  "short_name": "Cards",
+  "start_url": "/pages/demos/cards.html",
+  "display": "standalone",
+  "background_color": "#84d1f7",
+  "theme_color": "#d85f52"
+}

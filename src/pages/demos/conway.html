@@ -1,0 +1,186 @@
+<html>
+
+<head>
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=0"/>
+</head>
+
+<body>
+  <style>
+    html,
+    body {
+      padding: 0;
+      margin: 0;
+      width: 100%;
+      height: 100%;
+    }
+
+    #can {
+      image-rendering: pixelated;
+      display: block;
+      margin: auto;
+      max-width:100%;
+      max-height:100%;
+    }
+  </style>
+
+  <canvas id="can"></canvas>
+
+  <script>
+    function Game(width, height) {
+      this.width = width;
+      this.height = height;
+      this.state = Array(width * height);
+    }
+
+    Game.prototype = {
+      getCell: function(state, x, y) {
+        return state[y * this.width + x];
+      },
+      setCell: function(x, y, val) {
+        this.state[y * this.width + x] = val;
+      },
+      getNeighborsAlive: function(state, x, y) {
+        var alive = 0;
+        for (var i = 0; i < 3 * 3; i++) {
+          var nx = ((i % 3) | 0) - 1;
+          var ny = ((i / 3) | 0) - 1;
+
+          if (x + nx == x && y + ny == y) continue;
+
+          var a = this.getCell(state, x + nx, y + ny);
+          if (a) alive++;
+        }
+        return alive;
+      },
+      reproduce: function(state, x, y) {
+        var sum = [0, 0, 0];
+        var total = 0;
+        for (var i = 0; i < 3 * 3; i++) {
+          var nx = ((i % 3) | 0) - 1;
+          var ny = ((i / 3) | 0) - 1;
+
+          //if(x+nx == x && y+ny == y)continue;
+
+          var a = this.getCell(state, x + nx, y + ny);
+          if (a) {
+            sum[0] += a[0] * a[0];
+            sum[1] += a[1] * a[1];
+            sum[2] += a[2] * a[2];
+          }
+        }
+        if (Math.random() < 0.001) {
+          return [(Math.random() * 255), (Math.random() * 255), (Math.random() * 255)];
+        } else {
+          return [Math.sqrt(sum[0] / 3), Math.sqrt(sum[1] / 3), Math.sqrt(sum[2] / 3)];
+        }
+
+      },
+      randomizeState: function(weight) {
+        var weight = weight == undefined ? 0.5 : weight;
+        for (var i = 0; i < this.state.length; i++) {
+          if (Math.random() < weight) {
+            this.state[i] = [(Math.random() * 255) | 0, (Math.random() * 255) | 0, (Math.random() * 255) | 0];
+          } else {
+            this.state[i] = false;
+          }
+        }
+      },
+      step: function() {
+        var state = this.state;
+        this.state = Array(this.width * this.height);
+
+        var change = 0.0
+
+        for (var i = 0; i < this.width * this.height; i++) {
+          var x = (i % this.width) | 0;
+          var y = ((i / this.width) | 0) % this.height;
+
+          var me = state[i]; //alive?
+          var neighbors = this.getNeighborsAlive(state, x, y);
+
+          if (me) { //alive
+            if (neighbors < 2) {
+              this.setCell(x, y, false); //dies ass if by under population
+              change += 1;
+            } else if (neighbors <= 3) {
+              this.setCell(x, y, me); //lives on!
+            } else if (neighbors > 3) {
+              this.setCell(x, y, false); //dies ass if by over population
+              change += 1;
+            }
+          } else if (neighbors == 3) {
+            this.setCell(x, y, this.reproduce(state, x, y)); //reproduction
+            change += 1;
+          }
+        }
+        change /= this.width * this.height;
+        return change;
+      }
+    };
+    
+    var url = new URL(location.href);
+    var scale = url.searchParams.get("scale") || 8;
+    var WIDTH = (window.innerWidth/scale) | 0,
+      HEIGHT = (window.innerHeight/scale) | 0,
+      tileSize = scale;
+    var conway = new Game(WIDTH, HEIGHT);
+    conway.randomizeState(Math.random());
+    conway.step();
+    conway.step();
+
+    var canvas = document.getElementById("can");
+    canvas.width = WIDTH * tileSize;
+    canvas.height = HEIGHT * tileSize;
+
+    var ctx = canvas.getContext("2d");
+
+    ctx.fillStyle = "white";
+    ctx.fillRect(0,0,canvas.width,canvas.height);
+
+    function draw(game) {
+      var state = game.state;
+
+      // ctx.globalAlpha = 0.25
+      // ctx.drawImage(canvas,0,1);
+      // ctx.globalAlpha = 1
+
+      for (var i = 0; i < state.length; i++) {
+        var x = (i % game.width) | 0;
+        var y = (i / game.width) | 0;
+        if (state[i]) {
+          ctx.fillStyle = 'rgba(' + state[i].join(',') + ',0.1)';
+          ctx.fillRect(x * tileSize, y * tileSize, tileSize, tileSize);
+        }
+      }
+    }
+
+    var speed = 30; // n times a second
+    var last_change = 0.0
+    var trend = 0.0;
+    var last_trend = 0.0
+
+    function step() {
+      var change = conway.step() * 100;
+      trend += change - last_change;
+      if (change < 1 || trend == last_trend) {
+        conway.randomizeState(Math.random());
+        conway.step();
+        conway.step();
+      }
+      last_change = change
+    }
+    (function d() {
+      step();
+      draw(conway);
+      requestAnimationFrame(d);
+    }());
+
+    canvas.addEventListener("click", function() {
+      conway.randomizeState(Math.random());
+      conway.step();
+      conway.step();
+    });
+  </script>
+</body>
+
+</html>

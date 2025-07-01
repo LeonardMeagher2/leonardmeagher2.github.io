@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#000000">
+  <title>{% if title %}{{ title }} - {% endif %}Leonard Meagher</title>
+  <link rel="stylesheet" href="/assets/css/components.css">
+</head>
+<body>
+  <div class="container">
+    <header class="site-header">
+      <h1 class="site-title"><a href="/">Leonard Meagher II</a></h1>
+    </header>
+
+    <div class="main-layout">
+      <nav class="sidebar">
+        {% include "navigation.njk" %}
+      </nav>
+
+      <main class="content">
+        {{ content | safe }}
+      </main>
+    </div>
+
+    <footer class="site-footer">
+      <p>
+        <a href="https://www.github.com/LeonardMeagher2">Github</a> • 
+        <a href="https://codepen.io/LeonardMeagher2/">CodePen</a> • 
+        <a href="https://www.linkedin.com/in/leonardmeagher/">LinkedIn</a>
+      </p>
+    </footer>
+  </div>
+
+  <!-- Load component scripts -->
+  <script src="/assets/js/theme.js"></script>
+  <script src="/assets/js/navigation.js"></script>
+  <script src="/assets/js/buttons.js"></script>
+  <script src="/assets/js/app.js"></script>
+</body>
+</html>

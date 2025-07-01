@@ -1,0 +1,165 @@
+/* Typography Component Styles */
+
+@import url('https://fonts.googleapis.com/css2?family=Share+Tech+Mono:wght@400&display=swap');
+
+/* Universal box-sizing */
+*, *::before, *::after {
+  box-sizing: border-box;
+}
+
+/* Typography */
+h1, h2, h3, h4, h5, h6 {
+  font-family: 'Courier New', 'Monaco', 'Menlo', 'Consolas', monospace;
+  font-weight: bold;
+  margin: 20px 0 10px 0;
+  background: var(--primary);
+  color: var(--background);
+  text-rendering: geometricPrecision;
+  -webkit-font-smoothing: none;
+  -moz-osx-font-smoothing: unset;
+  font-smooth: never;
+  position: relative;
+  text-transform: uppercase;
+  padding: 2px 4px;
+  display: inline-block;
+}
+
+/* Reset first letter to inherit from parent but maintain underline */
+h1::first-letter, h2::first-letter, h3::first-letter, h4::first-letter, h5::first-letter, h6::first-letter {
+  text-decoration: underline;
+  text-underline-offset: 2px;
+}
+
+
+h1 { font-size: 1.2em; }
+h2 { font-size: 1.1em; }
+h3 { font-size: 1em; }
+h4, h5, h6 { font-size: 1em; }
+
+p {
+  margin: 10px 0;
+}
+
+a {
+  color: var(--link);
+  text-decoration: underline;
+  transition: all 0.3s ease;
+}
+
+/* Unified hover styles - inversion effect for all interactive elements */
+a:hover,
+.nav-link:hover,
+.nav-label:hover,
+.btn:hover,
+.site-title a:hover {
+  background: var(--primary);
+  color: var(--background);
+  outline: none;
+}
+
+/* Special case: Arrow inversion on expandable folder hover */
+.nav-label.expandable:hover::before {
+  color: var(--background);
+}
+
+/* Special case: Selected nav item hover - invert from selected state */
+.nav-link.current:hover {
+  background: var(--background);
+  color: var(--primary);
+  border: 1px solid var(--primary);
+}
+
+ul, ol {
+  margin: 10px 0;
+  padding-left: 20px;
+}
+
+li {
+  margin: 2px 0;
+}
+
+/* Code blocks */
+pre, code {
+  font-family: inherit;
+  background: var(--surface);
+  color: var(--primary);
+}
+
+pre {
+  padding: 10px;
+  margin: 10px 0;
+  overflow-x: auto;
+  border: 1px solid var(--border);
+}
+
+code {
+  padding: 2px 4px;
+}
+
+blockquote {
+  margin: 10px 0;
+  padding-left: 20px;
+  border-left: 2px solid var(--border);
+  color: var(--text-dim);
+}
+
+/* Tables */
+table {
+  border-collapse: collapse;
+  width: 100%;
+  margin: 10px 0;
+}
+
+th, td {
+  border: 1px solid var(--border);
+  padding: 8px;
+  text-align: left;
+}
+
+th {
+  background: var(--primary);
+  color: var(--background);
+  font-weight: 400;
+}
+
+/* Selection styling */
+::selection {
+  background: var(--selected-bg);
+  color: var(--selected-color);
+}
+
+
+/* Scrollbar styling - terminal-like */
+::-webkit-scrollbar {
+  width: 12px;
+  background: var(--background);
+}
+
+::-webkit-scrollbar-track {
+  background: var(--background);
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--border);
+  border: 1px solid var(--background);
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: var(--text-dim);
+}
+
+/* Input fields */
+input, textarea {
+  background: var(--background);
+  color: var(--primary);
+  border: 1px solid var(--border);
+  font-family: inherit;
+  font-size: inherit;
+  padding: 4px;
+}
+
+input:focus, textarea:focus {
+  outline: none;
+  background: var(--primary);
+  color: var(--background);
+}

@@ -1,0 +1,145 @@
+<html>
+
+<head>
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=0"/>
+</head>
+
+<body>
+
+    <canvas id="can"></canvas>
+
+    <style>
+        html,
+        body {
+            width: 100%;
+            height: 100%;
+            padding: 0;
+            margin: 0;
+            overflow: hidden;
+        }
+
+        #can {
+            height: 100%;
+            image-rendering: pixelated;
+        }
+    </style>
+
+    <script>
+        var w = can.width = (window.innerWidth / 4) | 0;
+        var h = can.height = (window.innerHeight / 4) | 0;
+        var ctx = can.getContext('2d');
+        var previous = Array(w * h);
+        var current = Array(w * h);
+
+        var imageData = ctx.getImageData(0, 0, w, h);
+        data = new Uint32Array(imageData.data.buffer);
+
+        var damping = 0.99;
+        var rain = 3.0;
+        var t = 0;
+        var waterColor = [75, 100, 200];
+
+        function getData(arr, x, y) {
+            return arr[(y | 0) * w + (x | 0)] || 0;
+        }
+        function setData(arr, x, y, data) {
+            arr[(y | 0) * w + (x | 0)] = data;
+        }
+        function clamp(x, min, max) {
+            return Math.max(Math.min(x, max), min);
+        }
+        function rand(min, max) {
+            return Math.random() * (max - min) + min;
+        }
+
+        function colorToInt(r, g, b, a) {
+            return (clamp(r, 0, 255) | (clamp(g, 0, 255) << 8) | (clamp(b, 0, 255) << 16) | (clamp(a, 0, 255) << 24)) & 0xFFFFFFFF;
+        }
+        function intToColor(n) {
+            return [n & 0x000000FF, n >> 8 & 0x000000FF, n >> 16 & 0x000000FF, n >> 24 & 0x000000FF];
+        }
+
+        function drawWater() {
+            for (let i = 0; i < w * h; i++) {
+                let x = (i % w) | 0;
+                let y = (i / w) | 0;
+                let shading = (getData(current, x, y - 1) - getData(current, x, y + 1));
+                data[i] = colorToInt(waterColor[0] + shading, waterColor[1] + shading, waterColor[2] + shading, 255);
+            }
+            ctx.putImageData(imageData, 0, 0);
+        }
+
+        function swapBuffers() {
+            var temp = previous;
+            previous = current;
+            current = temp;
+        }
+
+        function processWater() {
+            for (let x = 1; x < w - 1; x++) {
+                for (let y = 1; y < h - 1; y++) {
+                    let i = y * w + x;
+                    current[i] = (
+                        getData(previous, x - 1, y) + getData(previous, x + 1, y) + getData(previous, x, y - 1) + getData(previous, x, y + 1)
+                    ) / 2 - (current[i] || 0);
+                    current[i] = current[i] * damping;
+                }
+            }
+            drawWater();
+            swapBuffers();
+        }
+
+
+        function loop(time) {
+            processWater();
+            requestAnimationFrame(loop);
+            var delta = (performance.now() - time) / 1000 || 0;
+            t += delta;
+            if (t > rain) {
+                setData(current, rand(1, w - 1) | 0, rand(1, h - 1) | 0, 255);
+                t -= rain;
+            }
+        }
+
+        setData(current, w / 2, h / 2, 255);
+        loop();
+
+
+        var dragging = false;
+        function downHandler(e) {
+            var x = e.changedTouches ? e.changedTouches[0].clientX : e.clientX;
+            var y = e.changedTouches ? e.changedTouches[0].clientY : e.clientY;
+            var rect = can.getBoundingClientRect();
+            var scaleX = w / rect.width;
+            var scaleY = h / rect.height;
+            setData(current, x * scaleX, y * scaleY, -255);
+            dragging = true;
+        }
+        function moveHandler(e) {
+            if (dragging) {
+                var x = e.changedTouches ? e.changedTouches[0].clientX : e.clientX;
+                var y = e.changedTouches ? e.changedTouches[0].clientY : e.clientY;
+                var rect = can.getBoundingClientRect();
+                var scaleX = w / rect.width;
+                var scaleY = h / rect.height;
+                setData(current, x * scaleX, y * scaleY, -255);
+            }
+        }
+        function upHandler(e) {
+            dragging = false;
+        }
+
+        can.addEventListener("mousedown", downHandler);
+        can.addEventListener("touchstart", downHandler);
+
+        can.addEventListener("mousemove", moveHandler);
+        can.addEventListener("touchmove", moveHandler);
+
+        can.addEventListener("mouseup", upHandler);
+        can.addEventListener("touchend", upHandler);
+
+    </script>
+
+</body>
+
+</html>
